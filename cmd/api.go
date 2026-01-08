@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/mohammedkhalf/Ecommerce-API/internal/products"
 	"log"
 	"net/http"
 	"time"
@@ -31,6 +32,10 @@ func (app *application) mount() http.Handler {
 	r.Get("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("all good"))
 	})
+
+	productHandler := products.NewHandler(nil)
+	r.Get("/products", productHandler.ListProducts)
+	
 	return r
 }
 
