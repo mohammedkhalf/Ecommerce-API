@@ -5,6 +5,7 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/jackc/pgx/v5"
 	repo "github.com/mohammedkhalf/Ecommerce-API/internal/adapters/postgresql/sqlc"
+	"github.com/mohammedkhalf/Ecommerce-API/internal/orders"
 	"github.com/mohammedkhalf/Ecommerce-API/internal/products"
 	"log"
 	"net/http"
@@ -35,9 +36,15 @@ func (app *application) mount() http.Handler {
 		w.Write([]byte("all good"))
 	})
 
+	//Products
 	productService := products.NewService(repo.New(app.db))
 	productHandler := products.NewHandler(productService)
 	r.Get("/products", productHandler.ListProducts)
+
+	//Orders
+	orderService := orders.NewService(repo.New(app.db), app.db)
+	ordersHandler := orders.NewHandler(orderService)
+	r.Post("/orders", ordersHandler.PlaceOrder)
 
 	return r
 }
